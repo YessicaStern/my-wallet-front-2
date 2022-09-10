@@ -70,6 +70,7 @@ const ButtonRegister=styled.button`
     line-height: 23px;
     color: #FFFFFF;
     margin-bottom: 40px;
+    cursor: pointer;
 `
 const H1Login=styled.h1`
     font-family: 'Raleway';
@@ -78,6 +79,7 @@ const H1Login=styled.h1`
     font-size: 15px;
     line-height: 18px;
     color: white;
+    cursor: pointer;
 `
 const FormRegister=styled.form`
     width: 100%;

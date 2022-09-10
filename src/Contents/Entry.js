@@ -70,6 +70,7 @@ const ButtonSave=styled.button`
     line-height: 23px;
     color: #FFFFFF;
     margin-bottom: 40px;
+    cursor: pointer;
 `
 const FormEntry=styled.form`
     width: 100%;

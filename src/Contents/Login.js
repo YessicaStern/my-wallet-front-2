@@ -5,7 +5,7 @@ export default function Login(){
     const navigate=useNavigate();
     return (
     <DivLogin>
-        <H1Logo>MyWalle</H1Logo>
+        <H1Logo>MyWallet</H1Logo>
         <FormLogin>
             <InputEmail placeholder="E-mail"></InputEmail>
             <InputPassword placeholder="Senha"></InputPassword>
@@ -66,6 +66,7 @@ const ButtonEnter=styled.button`
     line-height: 23px;
     color: #FFFFFF;
     margin-bottom: 40px;
+    cursor: pointer;
 `
 const H1Login=styled.h1`
     font-family: 'Raleway';
@@ -74,6 +75,7 @@ const H1Login=styled.h1`
     font-size: 15px;
     line-height: 18px;
     color: white;
+    cursor: pointer;
 `
 const FormLogin=styled.form`
     width: 100%;
