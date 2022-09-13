@@ -1,17 +1,34 @@
 import styled from "styled-components"
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { postExit } from "../Provider/axiosMyWallet";
 
 export default function Exit(){
     const navigate=useNavigate();
+    const [form,setForm]=useState({
+        value:"",
+        description:"",    
+    })
+    function handleForm(e){
+        e.preventDefault();
+        setForm({...form,[e.target.name]:e.target.value,});
+    }
+    function axiosExit(){
+        postExit(form).then((res)=>{
+            navigate("/movimentacoes");
+        }).catch((res)=>{
+                alert(res.response.data.message);
+        });
+    }
     return (
     <DivExit>
         <DivInfo><H1Exit>Nova saída</H1Exit></DivInfo>
         
         <FormExit>
-            <InputValue placeholder="Valor"></InputValue>
-            <InputDescription placeholder="Descrição"></InputDescription>
+            <InputValue placeholder="Valor" type="number" name="value" onChange={handleForm} ></InputValue>
+            <InputDescription placeholder="Descrição" type="name" name="description" onChange={handleForm}></InputDescription>
         </FormExit>
-        <ButtonSave onClick={()=>{navigate("/conteudo")}}>Salvar saida</ButtonSave>
+        <ButtonSave onClick={axiosExit}>Salvar saida</ButtonSave>
     </DivExit>);
 }
 

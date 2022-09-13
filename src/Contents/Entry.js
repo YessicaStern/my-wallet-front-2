@@ -1,17 +1,34 @@
 import styled from "styled-components"
 import { useNavigate } from "react-router-dom"
+import { postEntry } from "../Provider/axiosMyWallet";
+import { useState } from "react";
 
 export default function Entry(){
     const navigate=useNavigate();
+    const [form,setForm]=useState({
+        value:"",
+        description:"",    
+    })
+    function handleForm(e){
+        e.preventDefault();
+        setForm({...form,[e.target.name]:e.target.value,});
+    }
+    function axiosEntry(){
+        postEntry(form).then((res)=>{
+            navigate("/movimentacoes");
+        }).catch((res)=>{
+                alert(res.response.data.message);
+        });
+    }
     return (
     <DivEntry>
         <DivInfo><H1Entry>Nova entrada</H1Entry></DivInfo>
         
         <FormEntry>
-            <InputValue placeholder="Valor"></InputValue>
-            <InputDescription placeholder="Descrição"></InputDescription>
+            <InputValue placeholder="Valor" type="number" name="value" onChange={handleForm} ></InputValue>
+            <InputDescription placeholder="Descrição" type="name" name="description" onChange={handleForm}></InputDescription>
         </FormEntry>
-        <ButtonSave onClick={()=>{navigate("/conteudo")}}>Salvar entrada</ButtonSave>
+        <ButtonSave onClick={axiosEntry}>Salvar entrada</ButtonSave>
     </DivEntry>);
 }
 

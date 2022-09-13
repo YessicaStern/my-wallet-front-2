@@ -1,18 +1,38 @@
 import styled from "styled-components"
 import { useNavigate } from "react-router-dom"
+import {React, useState} from "react";
+import { postRegister } from "../Provider/axiosMyWallet";
 
 export default function Registration(){
     const navigate=useNavigate();
+    const [form,setForm]=useState({
+        name:"",
+        email:"",
+        password:"",
+        passwordConfirm:""
+    })
+    function handleForm(e){
+        e.preventDefault();
+        setForm({...form,[e.target.name]:e.target.value,});
+    }
+    function register(){
+        postRegister(form).then((res)=>{
+            navigate("/");
+        }).catch((res)=>{
+                alert(res.response.data.message);
+                
+            });
+    }
     return (
     <DivRegistration>
         <H1Logo>MyWalle</H1Logo>
         <FormRegister>
-            <InputName placeholder="Nome"></InputName>
-            <InputEmail placeholder="E-mail"></InputEmail>
-            <InputPassword placeholder="Senha"></InputPassword>
-            <InputPasswordConfirm placeholder="Confirme a senha"></InputPasswordConfirm>
+            <InputName placeholder="Nome" type="name" name="name" onChange={handleForm} ></InputName>
+            <InputEmail placeholder="E-mail" type="email" name="email" onChange={handleForm} ></InputEmail>
+            <InputPassword placeholder="Senha" type="password" name="password" onChange={handleForm} ></InputPassword>
+            <InputPasswordConfirm placeholder="Confirme a senha" name="passwordConfirm" type="password" onChange={handleForm} ></InputPasswordConfirm>
         </FormRegister>
-        <ButtonRegister onClick={()=>{navigate("/")}}>Cadastrar</ButtonRegister>
+        <ButtonRegister onClick={register}>Cadastrar</ButtonRegister>
         <H1Login onClick={()=>{navigate("/")}}>Já tem uma conta? Entre agora!</H1Login>       
     </DivRegistration>);
 }

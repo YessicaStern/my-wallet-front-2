@@ -1,44 +1,78 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
+import { getMoviments } from "../Provider/axiosMyWallet";
 
-let name= "Lola";
 
-function ContainerFull(){
+function ContainerFull({moviments}){
+    let sum=0;
+    let subtraction=0;
+    const valueTotalArr=moviments.map(total);
+    function total(value){
+        if(value.type){
+            sum+=Number(value.value);
+        }else{
+            subtraction+=Number(value.value);
+        }
+        return sum-subtraction;
+    }   
+    let valueTotal=valueTotalArr[valueTotalArr.length -1];
+    // console.log("Valor total",valueTotal[valueTotal.length -1]);
     return(
         <BoxContainerFull>
             <BoxLines>  
-                <Line><h1>30/02</h1><h2>Mercado</h2><h3>560,00</h3></Line>
-                <Line><h1>30/02</h1><h2>Salario</h2><h4>1450,00</h4></Line>
+            {moviments.map((e,i)=>(<Line key={i}>
+                <h1>{e.day}</h1>
+                <h2>{e.description}</h2>
+                <h3 style={{color:( e.type===true )? "#03AC00" : "#C70000"}}>{e.value}</h3>
+                </Line>))}
             </BoxLines>
-            <Balance><h5>Saldo</h5> <h4>890</h4> </Balance>
+            <Balance><h5>Saldo</h5> <h4 style={{color:(valueTotal >0)? "#03AC00" : "#C70000"}} >{valueTotal}</h4> </Balance>
         </BoxContainerFull>
     )
 }
-function ContainerEmpty(){
+function ContainerEmpty({setValidate,moviments}){
+    if(moviments.length!=0){
+        setValidate(true);
+    };
     
     return(
         <BoxContainer><h1>Não há registros de<br/>entrada ou saída</h1></BoxContainer>
     )
 }
 
+
+
 export default function Container(){
-    const [ok,setOk]=useState(true);   
+    const [validate,setValidate]=useState(false);
     const navigate=useNavigate();
+    const [moviments,setMoviments]= useState([]);
+    const name=localStorage.getItem("name");
+    useEffect(()=>{
+        getMoviments().then((res)=>{
+            setMoviments(res.data)
+        }).catch((res)=>console.log(res))
+    },[validate]);
+
+    function exitNow(){
+        localStorage.removeItem("token");
+        localStorage.removeItem("name");
+        navigate("/");
+    }
+    
     return (
     <DivContainer>
         <DivTopoContainer>
-            <H1Name>Ola, {name} </H1Name> <IconGoOut onClick={()=>{navigate("/")}}><ion-icon name="exit-outline"></ion-icon></IconGoOut>
+            <H1Name>Ola, {name} </H1Name> <IconGoOut onClick={exitNow}><ion-icon name="exit-outline"></ion-icon></IconGoOut>
         </DivTopoContainer>
 
-        {ok ? (<ContainerFull/>):(<ContainerEmpty/>)}  
+        {validate ? (<ContainerFull moviments={moviments}/>):(<ContainerEmpty setValidate={setValidate} moviments={moviments}/>)}  
 
        <DivLittleBox>
             <NewEntry onClick={()=>{navigate("/entrada")}}><IconLittleBox><ion-icon name="add-circle-outline"></ion-icon></IconLittleBox><h1>Nova entrada</h1></NewEntry>
             <Space></Space>
             <NewExit onClick={()=>{navigate("/saida")}}><IconLittleBox><ion-icon name="remove-circle-outline"></ion-icon></IconLittleBox><h1>Nova saída</h1></NewExit>
        </DivLittleBox>
-
     </DivContainer>);
 }
 
@@ -80,6 +114,7 @@ const BoxContainer=styled.div`
     display: flex;
     justify-content:center;
     align-items: center;
+    overflow-y: scroll ;
     h1{
         font-family: 'Raleway';
         font-weight: 400;
@@ -144,10 +179,6 @@ const BoxContainerFull=styled.div`
         color: #C6C6C6;
     }h2{
         color: #000000;
-    }h3{
-        color: #C70000;
-    }h4{
-        color: #03AC00;
     }h5{
         font-weight: 700;
         font-size: 17px;

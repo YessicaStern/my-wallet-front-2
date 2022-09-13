@@ -1,16 +1,37 @@
 import styled from "styled-components"
 import { useNavigate } from "react-router-dom"
+import React, { useState } from "react";
+import { postLogin } from "../Provider/axiosMyWallet";  
 
-export default function Login(){
+export default function Login(){  
     const navigate=useNavigate();
+    const [form,setForm]=useState({
+        email:"",
+        password:"",    
+    });
+    function handleForm(e){
+        e.preventDefault();
+        //console.log(e.target.name,e.target.value);
+        setForm({...form,[e.target.name]:e.target.value,});
+    }
+    function axiosLogin(){
+        postLogin(form).then((res)=>{
+            localStorage.setItem("token",res.data.token);
+            localStorage.setItem("name",res.data.user);
+            navigate("/movimentacoes");
+            window.location.reload();
+        }).catch((res)=>{
+            alert(res.response.data.message);
+        });
+    }
     return (
     <DivLogin>
         <H1Logo>MyWallet</H1Logo>
         <FormLogin>
-            <InputEmail placeholder="E-mail"></InputEmail>
-            <InputPassword placeholder="Senha"></InputPassword>
+            <InputEmail placeholder="E-mail" type="email" name="email" onChange={handleForm} ></InputEmail>
+            <InputPassword placeholder="Senha" type="password" name="password" onChange={handleForm} ></InputPassword>
         </FormLogin>
-        <ButtonEnter onClick={()=>{navigate("/conteudo")}}>Entrar</ButtonEnter>
+        <ButtonEnter onClick={axiosLogin}>Entrar</ButtonEnter>
         <H1Login onClick={()=>{navigate("/cadastro")}}>Primeira vez? Cadastre-se!</H1Login>       
     </DivLogin>);
 }

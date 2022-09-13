@@ -14,7 +14,7 @@ export default function App(){
           <Routes>
             <Route path="/" element={<Login/>}/>
             <Route path="/cadastro" element={<Registration/>}/>
-            <Route path="/conteudo" element={<Container/>}/>
+            <Route path="/movimentacoes" element={<Container/>}/>
             <Route path="/entrada" element={<Entry/>}/>
             <Route path="/saida" element={<Exit/>}/>
           </Routes>
